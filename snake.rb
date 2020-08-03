@@ -6,10 +6,12 @@ set fps_cap: 10
 # width = 640 / 20 = 32
 # height = 480 / 20 = 24
 
+KEYS = %w[up down left right]
 GRID_SIZE = 20
+GRID_WIDTH = Window.width / GRID_SIZE
+GRID_HEIGHT = Window.height / GRID_SIZE
 
 class Snake
-
   attr_writer :direction
 
   def initialize
@@ -32,13 +34,13 @@ class Snake
     @positions.shift
     case @direction
     when 'down'
-      @positions.push([head[0], head[1] + 1])
+      @positions.push(new_coords(head[0], head[1] + 1))
     when 'up'
-      @positions.push([head[0], head[1] - 1])
+      @positions.push(new_coords(head[0], head[1] - 1))
     when 'left'
-      @positions.push([head[0] - 1, head[1]])
+      @positions.push(new_coords(head[0] - 1, head[1]))
     when 'right'
-      @positions.push([head[0] + 1, head[1]])
+      @positions.push(new_coords(head[0] + 1, head[1]))
     end
   end
 
@@ -53,26 +55,26 @@ class Snake
 
   private
 
+  def new_coords(x, y)
+    [x % GRID_WIDTH, y % GRID_HEIGHT]
+  end
+
   def head
     @positions.last
   end
-
 end
 
 snake = Snake.new
 
 update do
   clear
-
   snake.move
   snake.draw
 end
 
 on :key_down do |event|
-  if ['up', 'down', 'left', 'right'].include?(event.key)
-    if snake.can_change_direction_to?(event.key)
-      snake.direction = event.key
-    end
+  if KEYS.include?(event.key)
+    snake.direction = event.key if snake.can_change_direction_to?(event.key)
   end
 end
 
