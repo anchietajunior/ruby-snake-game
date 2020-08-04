@@ -2,8 +2,6 @@ require 'ruby2d'
 require './lib/snake.rb'
 require './lib/game.rb'
 
-attr_accessor :game, :snake
-
 set background: 'navy'
 set fps_cap: 20
 
